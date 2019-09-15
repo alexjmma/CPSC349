@@ -1,12 +1,13 @@
 @font-face {
-  font-family: 'airstreamregular';
-  font-style: normal;
-  font-weight: normal;
-  src: url('fonts/Airstream-webfont.eot');
-  src: url('fonts/Airstream-webfont.eot?#iefix') format('embedded-opentype'),
-    url('fonts/Airstream-webfont.woff') format('woff'),
-    url('fonts/Airstream-webfont.ttf') format('truetype'),
-    url('fonts/Airstream-webfont.svg#airstreamregular') format('svg');
+    font-family: 'airstreamregular';
+    font-style: normal;
+    font-weight: normal;
+    src: url('fonts/Airstream-webfont.eot');
+    src: url('fonts/Airstream-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/Airstream-webfont.woff') format('woff'),
+         url('fonts/Airstream-webfont.ttf') format('truetype'),
+         url('fonts/Airstream-webfont.svg#airstreamregular') format('svg');
+
 }
 
 @font-face {
@@ -45,6 +46,7 @@ html, body {
   display: flex;
   flex: 1 1 auto;
   justify-content: center;
+
 }
 
 .detail-image-frame {
@@ -52,13 +54,13 @@ html, body {
   text-align: center;
 }
 
-.detail-image-title {
+.detail-image-title{
   bottom: -16px;
   color: white;
   font-family: airstreamregular;
   font-size: 40px;
   left: 4px;
-  position: absolute;
+  position:absolute;
   text-shadow: rgba(0, 0, 0, 0.9) 1px 2px 9px;
 }
 
@@ -91,7 +93,10 @@ html, body {
   display: inline-block;
   max-width: 100px;
   min-width: 100px;
+
+
 }
+
 
 .thumbail-list {
   display: flex;
