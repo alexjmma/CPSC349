@@ -13,55 +13,41 @@ function Square(props) {
 
 
 class Board extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      squares: Array(9).fill(null),
-      xIsNext: true,
-    };
-  }
-
-  handleClick(i) {
-    const squares = this.state.squares.slice();
-    /*
-    We can now change the Board’s handleClick function to return
-    early by ignoring a click if someone has won the game or if
-    a Square is already filled:
-    */
-    if (calculateWinner(squares) || squares[i]) {
-      return;
-    }
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
-    this.setState({
-    squares: squares,
-    xIsNext: !this.state.xIsNext,
-  });
-  }
+  /*
+  TimeTravel: Next, we’ll have the Board component receive squares and onClick props from the Game
+  component. Since we now have a single click handler in Board for many Squares, we’ll
+  need to pass the location of each Square into the onClick handler to indicate which
+  Square was clicked. Here are the required steps to transform the Board component:
+  */
 
   renderSquare(i) {
     return (<Square
-      value ={this.state.squares[i]}
-    onClick={() => this.handleClick(i)}/>
+      value ={this.props.squares[i]}
+    onClick={() => this.props.onClick(i)}/>
   );
   }
   /*
-  We will call calculateWinner(squares) in the Board’s render function to check if a
+  OLD: We will call calculateWinner(squares) in the Board’s render function to check if a
    player has won. If a player has won, we can display text such as “Winner: X” or
     “Winner: O”. We’ll replace the status declaration in Board’s render function with this
      code:
+
+     Time Travel: Since the Game component is now rendering the game’s status, we
+     can remove the corresponding code from the Board’s render method. After
+     refactoring, the Board’s render function looks like this:
+
   */
   render() {
-      const winner = calculateWinner(this.state.squares);
+      /*const winner = calculateWinner(this.state.squares);
       let status;
       if (winner) {
         status = 'Winner: ' + winner;
       } else {
         status = 'Next player: ' + (this.state.xIsNext? 'X' : 'O');
       }
-
+      */
     return (
       <div>
-        <div className="status">{status}</div>
         <div className="board-row">
           {this.renderSquare(0)}
           {this.renderSquare(1)}
@@ -103,15 +89,77 @@ function calculateWinner(squares) {
 }
 
 class Game extends React.Component {
+  handleClick(i) {
+    const history = this.state.history.slice(0, this.state.stepNumber + 1);
+    const current = history[history.length - 1];
+    const squares = current.squares.slice();
+    /*
+    We can now change the Board’s handleClick function to return
+    early by ignoring a click if someone has won the game or if
+    a Square is already filled:
+    */
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    this.setState({
+    history: history.concat([{
+      squares: squares,
+    }]),
+    stepNumber: history.length,
+    xIsNext: !this.state.xIsNext,
+  });
+  }
+
+  jumpTo(step) {
+    this.setState({
+      stepNumber: step,
+      xIsNext: (step % 2) === 0,
+    });
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      history: [{
+        squares: Array(9).fill(null),
+      }],
+      stepNumber: 0,
+      xIsNext: true,
+    };
+  }
   render() {
+  const history = this.state.history;
+  const current = history[this.state.stepNumber];
+  const winner = calculateWinner(current.squares);
+
+  const moves = history.map((step, move) => {
+      const desc = move ?
+        'Go to move #' + move :
+        'Go to game start';
+      return (
+        <li key={move}>
+          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+        </li>
+      );
+    });
+
+
+  let status;
+  if (winner) {
+     status = 'Winner: ' + winner;
+   } else {
+     status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+   }
+
     return (
       <div className="game">
         <div className="game-board">
           <Board />
         </div>
         <div className="game-info">
-          <div>{/* status */}</div>
-          <ol>{/* TODO */}</ol>
+          <div>{status}</div>
+          <ol>{moves}</ol>
         </div>
       </div>
     );
